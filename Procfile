@@ -1,1 +1,1 @@
-worker: python cocoa_auto_request_song.py
+web gunicorn cocoa_auto_request_song:app
