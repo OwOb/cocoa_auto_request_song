@@ -1,1 +1,1 @@
-web gunicorn app_run:app
+web gunicorn cocoa_auto_request_song:app
