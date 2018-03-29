@@ -23,9 +23,9 @@ def waitTime(soup) :
     delayTime = toSec(nowPlayTime[1])-toSec(nowPlayTime[0])
     if len(soup.find_all('br')) == 7 or len(soup.find_all('a')) != len(soup.find_all('li')) : #等待點播中
         for songInRequest in soup.find_all('tr') :
-            delayTime += toSec(songInRequest.find_all('td')[7].text)
             if songInRequest.find('a') or songInRequest.find('br') :
                 break
+            delayTime += toSec(songInRequest.find_all('td')[7].text)
     #del nowPlayTime
     return delayTime
     
