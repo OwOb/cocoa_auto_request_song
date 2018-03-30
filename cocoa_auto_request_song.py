@@ -16,7 +16,7 @@ def toTime(s) :
     return '%02d:'%(s//3600)+'%02d:'%(s//60%60)+'%02d'%(s%60)
 
 def nowTime() :
-    return time.strftime("%Y/%m/%d %H:%M:%S > ", time.localtime())
+    return time.strftime("%Y/%m/%d %H:%M:%S > ", time.gmtime(time.time()+28800))
 
 def waitTime(soup) :
     nowPlayTime = soup.find(id='timerPosition').text.split('/')
