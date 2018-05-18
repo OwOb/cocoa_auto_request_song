@@ -122,7 +122,7 @@ while 1 :
         continue
     
     
-    if len(soup.find_all('tr')) >= 21 : #歌單已滿
+    if len(soup.find_all('tr')) >= 23 : #歌單已滿
         print(nowTime()+'歌單已滿...  Q Q')
         delayTime = waitTime(soup)
         #del r, soup
