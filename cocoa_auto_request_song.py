@@ -39,7 +39,7 @@ def updata() :
     #del zero[:]
     print(nowTime()+'開始更新歌單...')
     
-    r = requests.get('acgr.no-ip.org:4095/ajax/zh_status.html') #獲取songList
+    r = requests.get('http://acgr.no-ip.org:4095/ajax/zh_status.html') #獲取songList
     soup = BeautifulSoup(r.text, 'html.parser')
     songListNameList, songCount, songTag = [songListIndex.text for songListIndex in soup.find_all('li')], 0, ['name', 'artist', 'series', 'playedTime', 'requestTime', 'codec']
     #del r, soup
