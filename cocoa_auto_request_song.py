@@ -39,7 +39,7 @@ def updata() :
     #del zero[:]
     print(nowTime()+'開始更新歌單...')
     
-    r = requests.get('http://acgmusic.ddns.net:4095/ajax/zh_status.html') #獲取songList
+    r = requests.get('acgr.no-ip.org:4095/ajax/zh_status.html') #獲取songList
     soup = BeautifulSoup(r.text, 'html.parser')
     songListNameList, songCount, songTag = [songListIndex.text for songListIndex in soup.find_all('li')], 0, ['name', 'artist', 'series', 'playedTime', 'requestTime', 'codec']
     #del r, soup
@@ -49,7 +49,7 @@ def updata() :
         print(nowTime()+'正在更新... ('+songListName+')')
         songId, page = 0, 0
         while 1 : #持續換page搜尋
-            r = requests.get('http://acgmusic.ddns.net:4095/ajax/zh_songlist.html?list_id='+str(songListId)+'&page='+str(page))
+            r = requests.get('http://acgr.no-ip.org:4095/ajax/zh_songlist.html?list_id='+str(songListId)+'&page='+str(page))
             soup = BeautifulSoup(r.text, 'html.parser')
             songArray = soup.find_all('tr')
             if len(songArray) == 0 : #該songList已搜尋完
@@ -101,7 +101,7 @@ else :
 #主迴圈
 while 1 :
 
-    r = requests.get('http://acgmusic.ddns.net:4095/ajax/zh_status.html')
+    r = requests.get('http://acgr.no-ip.org:4095/ajax/zh_status.html')
     soup = BeautifulSoup(r.text, 'html.parser')
     
     
@@ -137,8 +137,8 @@ while 1 :
     print(nowTime()+'申請點播歌曲 ['+allSong[requestSongId]['name']+'] (list='+str(requestSongId[0])+' id='+str(requestSongId[1])+')')
     #del r, soup
     
-    requests.get('http://acgmusic.ddns.net:4095/played.html?cmd=request&list_id='+str(requestSongId[0])+'&song_id='+str(requestSongId[1]))
-    r = requests.get('http://acgmusic.ddns.net:4095/ajax/zh_status.html')
+    requests.get('http://acgr.no-ip.org:4095/played.html?cmd=request&list_id='+str(requestSongId[0])+'&song_id='+str(requestSongId[1]))
+    r = requests.get('http://acgr.no-ip.org:4095/ajax/zh_status.html')
     soup = BeautifulSoup(r.text, 'html.parser')
     
     if len(soup.find_all('br')) == 6 and len(soup.find_all('a')) == len(soup.find_all('li')) : #點播失敗
