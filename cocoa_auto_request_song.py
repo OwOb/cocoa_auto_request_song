@@ -21,10 +21,10 @@ def nowTime() :
 def request(s) :
     while (1) : #重複嘗試
         try :
-            r = requests.get(s, timeout=1)
+            r = requests.get(s)
             return r
         except :
-            print(nowtime()+'request error : '+s)
+            print(nowTime()+'request error : '+s)
 
 def waitTime(soup) :
     nowPlayTime = soup.find(id='timerPosition').text.split('/')
