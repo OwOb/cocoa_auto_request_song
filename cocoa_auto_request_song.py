@@ -18,6 +18,14 @@ def toTime(s) :
 def nowTime() :
     return time.strftime("%Y/%m/%d %H:%M:%S > ", time.gmtime(time.time()+28800))
 
+def request(s) :
+    while (1) : #重複嘗試
+        try :
+            r = requests.get(s)
+            return r
+        except :
+            print(nowtime()+'request error : '+s)
+
 def waitTime(soup) :
     nowPlayTime = soup.find(id='timerPosition').text.split('/')
     delayTime = toSec(nowPlayTime[1])-toSec(nowPlayTime[0])
@@ -39,9 +47,9 @@ def updata() :
     #del zero[:]
     print(nowTime()+'開始更新歌單...')
     
-    r = requests.get('http://acgmusic.ddns.net:4095/ajax/zh_status.html') #獲取songList
+    r = request('http://acgmusic.ddns.net:4095/ajax/zh_status.html') #獲取songList
     soup = BeautifulSoup(r.text, 'html.parser')
-    songListNameList, songCount, songTag = [songListIndex.text for songListIndex in soup.find_all('li')], 0, ['name', 'artist', 'series', 'playedTime', 'requestTime', 'codec']
+    songListNameList, songCount, songTag = [songListIndex.text for songListIndex in soup.find_all('li')], 0, ['name', 'artist', 'series', 'playedTime', 'songTime', 'codec']
     #del r, soup
     
     songListId = 1
@@ -49,12 +57,7 @@ def updata() :
         print(nowTime()+'正在更新... ('+songListName+')')
         songId, page = 0, 0
         while 1 : #持續換page搜尋
-            while 1 : #錯誤則重新get
-                try :
-                    r = requests.get('http://acgmusic.ddns.net:4095/ajax/zh_songlist.html?list_id='+str(songListId)+'&page='+str(page))
-                    break;
-                except :
-                    1 #do not thing
+            r = request('http://acgmusic.ddns.net:4095/ajax/zh_songlist.html?list_id='+str(songListId)+'&page='+str(page))
             soup = BeautifulSoup(r.text, 'html.parser')
             songArray = soup.find_all('tr')
             if len(songArray) == 0 : #該songList已搜尋完
@@ -99,15 +102,20 @@ except :
 
 if lastTime != 0 :
     f.close()
-else :
-    updata()
 
 
 #主迴圈
 while 1 :
 
-    r = requests.get('http://acgmusic.ddns.net:4095/ajax/zh_status.html')
+    r = request('http://acgmusic.ddns.net:4095/ajax/zh_status.html')
     soup = BeautifulSoup(r.text, 'html.parser')
+    
+    
+    if time.time()-lastTime > 86400 : #初次啟動程式or超過24hr沒更新歌單
+        print(nowTime()+'初次啟動程式 or 超過24hr沒更新歌單...')
+        #del r, soup
+        updata()
+        continue
     
     
     if len(soup.find_all('br')) == 7 or len(soup.find_all('a')) != len(soup.find_all('li')) : #點播歌曲仍在點播列中
@@ -117,13 +125,6 @@ while 1 :
         print(nowTime()+'等待 '+toTime(delayTime)+' 後重新申請點播...')
         time.sleep(delayTime)
         #del delayTime
-        continue
-    
-    
-    if time.time()-lastTime > 86400 : #初次啟動程式or超過24hr沒更新歌單
-        print('初次啟動程式 or 超過24hr沒更新歌單...')
-        #del r, soup
-        updata()
         continue
     
     
@@ -142,8 +143,8 @@ while 1 :
     print(nowTime()+'申請點播歌曲 ['+allSong[requestSongId]['name']+'] (list='+str(requestSongId[0])+' id='+str(requestSongId[1])+')')
     #del r, soup
     
-    requests.get('http://acgmusic.ddns.net:4095/played.html?cmd=request&list_id='+str(requestSongId[0])+'&song_id='+str(requestSongId[1]))
-    r = requests.get('http://acgmusic.ddns.net:4095/ajax/zh_status.html')
+    request('http://acgmusic.ddns.net:4095/played.html?cmd=request&list_id='+str(requestSongId[0])+'&song_id='+str(requestSongId[1]))
+    r = request('http://acgmusic.ddns.net:4095/ajax/zh_status.html')
     soup = BeautifulSoup(r.text, 'html.parser')
     
     if len(soup.find_all('br')) == 6 and len(soup.find_all('a')) == len(soup.find_all('li')) : #點播失敗
