@@ -49,7 +49,12 @@ def updata() :
         print(nowTime()+'正在更新... ('+songListName+')')
         songId, page = 0, 0
         while 1 : #持續換page搜尋
-            r = requests.get('http://acgmusic.ddns.net:4095/ajax/zh_songlist.html?list_id='+str(songListId)+'&page='+str(page))
+            while 1 : #錯誤則重新get
+                try :
+                    r = requests.get('http://acgmusic.ddns.net:4095/ajax/zh_songlist.html?list_id='+str(songListId)+'&page='+str(page))
+                    break;
+                except :
+                    1 #do not thing
             soup = BeautifulSoup(r.text, 'html.parser')
             songArray = soup.find_all('tr')
             if len(songArray) == 0 : #該songList已搜尋完
