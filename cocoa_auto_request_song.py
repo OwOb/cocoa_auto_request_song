@@ -76,8 +76,8 @@ def updata() :
         #del songId, page
     lastTime = time.time()
     f = open('cocoa_songlist.txt','w',encoding='utf-8')
-    f.write(str(allSong))
-    f.write('\n'+str(lastTime)+'\n')
+    f.write(str(allSong)+'\n')
+    f.write(str(lastTime)+'\n')
     f.close
     print(nowTime()+'歌單更新完成 (共 '+str(songCount)+' 首)  OwO')
     #del songListNameList, songCount, songTag, songListId
@@ -91,6 +91,7 @@ print(nowTime()+'心愛台自動點播系統啟動~~~')
 try :
     lastTime, f = 0, open('cocoa_songlist.txt','r',encoding='utf-8')
     allSong, zero, lastTime = eval(f.readline()), [], int(f.readline().split('.')[0])
+    f.close()
     for key in allSong :
         if allSong[key]['playedTime'] == '0' :
             zero.append(key)
@@ -99,10 +100,7 @@ try :
 except :
     allSong, zero, lastTime = {}, [], 0
     print(nowTime()+'載入記錄失敗...')
-
-if lastTime != 0 :
-    f.close()
-
+    
 
 #主迴圈
 while 1 :
