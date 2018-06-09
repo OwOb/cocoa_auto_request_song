@@ -21,7 +21,7 @@ def nowTime() :
 def request(s) :
     while (1) : #重複嘗試
         try :
-            r = requests.get('http://acgmusic.ddns.net:4095/'+s)
+            r = requests.get('http://acgmusic.ddns.net:4095/'+s, timeout=3000)
             return r
         except :
             print(nowTime()+'request error : '+s)
